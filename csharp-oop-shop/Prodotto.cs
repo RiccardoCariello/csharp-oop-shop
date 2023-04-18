@@ -86,12 +86,12 @@ namespace csharp_oop_shop
 
       
 
-        float PrezzoBase()
+        public float PrezzoBase()
         {
             return Code;
         }
 
-        float PrezzoIva()
+        public float PrezzoIva()
         {
             return Code * Iva;
         }
