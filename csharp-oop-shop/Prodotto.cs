@@ -5,62 +5,153 @@ using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace csharp_oop_shop
 {
     internal class Prodotto
     {
-        //attributi
-        /*
         private int code;
-        private string name;
-        private string description;
-        private float prezzo;
-        private int iva;
-        */
+        public int Code
+        {
+            get
+            {
+                return code;
+            }
+        }
 
        
-        
+        private string name;
+        public string Name
+        {
+            get
+            {
+                return this.name;
+            }
+            set
+            {
+                this.name = value;
+            }
+        }
 
-        //PROPERTIES
+        private string description;
+        public string Description
+        {
+            get
+            {
+                return this.description;
+            }
+            set
+            {
+                this.description = value;
+            }
+        }
 
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public float Prezzo { get; set; }
+        private float price;
+        public float Price
+        {
+            get
+            {
+                return this.price;
+            }
+            set
+            {
+                if (value > 0)
+                {
+                    this.price = value;
+                }
+            }
+        }
 
-        
-        public int Code { get; }
-             
+        private int tax;
+        public int Tax
+        {
+            get
+            {
+                return tax;
+            }
+            set
+            {
+                tax = value;
+            }
+        }
 
-        private float Iva { get; set; }
+        private float priceWithTax;
+        public float PriceWithTax
+        {
+            get
+            {
+                return priceWithTax;
+            }
+            set
+            {
+                priceWithTax = value;
+            }
+        }
+
 
         //private string formattedCode;
+
         //CONSTRUCTOR
-        public Prodotto(string name, string description, float prezzo)
+        public Prodotto(string name, string description, float price, int iva = 22)
         {
-            Name = name;
-            this.Description = description;
-            this.Prezzo = prezzo;
-            Code = RandomGen();
-            Iva = 1.22f;
+            this.name = name;
+            this.description = description;
+            this.price = price;
+            this.code = RandomGen(); // magia?
+            this.tax = iva;
             //formattedCode = FormattedNum();
 
         }
 
-
-            
+        public void ResettaPrezzo()
+        {
+            this.price = 0;
+        }
 
         //METHODS
 
-        private int RandomGen() //questo metodo dovrebbe generare un random int e trasformarlo in string con il pad adatto e poi restituirlo
+        private int RandomGen() //questo metodo dovrebbe generare un random int e poi restituirlo
         {
-            Random rnd = new Random();
-            int codeInt = rnd.Next(1, 100000000);
+             Random rnd = new Random();
+            int numeroCifre = rnd.Next(1, 9);
+
+            int codeInt = 0;
+
+            switch (numeroCifre)
+            {
+                case 1:
+                    codeInt = rnd.Next(1, 10);
+                    break;
+                case 2:
+                    codeInt = rnd.Next(10, 100);
+                    break;
+                case 3:
+                    codeInt = rnd.Next(100, 1000);
+                    break;
+                case 4:
+                    codeInt = rnd.Next(1000, 10000);
+                    break;
+                case 5:
+                    codeInt = rnd.Next(10000, 1000000);
+                    break;
+                case 6:
+                    codeInt = rnd.Next(100000, 1000000);
+                    break;
+                case 7:
+                    codeInt = rnd.Next(1000000, 10000000);
+                    break;
+                case 8:
+                    codeInt = rnd.Next(10000000, 100000000);
+                    break;
+
+            }
+
             return codeInt;
            
         }
 
-        public string FormattedNum()
+        public string FormattedNum()// questro metodo formatta il numero dato e ci aggiunge 0 alla sinistra fino a raggiungere un massimo di 8 cifre
         {
             int padding = 0;
             padding = Code.ToString().Length;
@@ -78,7 +169,15 @@ namespace csharp_oop_shop
 
         }
 
-        public string CodeName()
+        public string getFormattedCodePadLeft8()
+        {
+            string codeString = this.code.ToString();
+            string codeStringPadded = codeString.PadLeft(8, '0');
+            return codeStringPadded;
+
+        }
+
+        public string CodeName() // ritorna una stringas con il codice formattato concatenato al nome.
         {
             string codeName = FormattedNum() + Name;
             return codeName;
@@ -86,14 +185,15 @@ namespace csharp_oop_shop
 
       
 
-        public float PrezzoBase()
+        public float GetPrezzoBase() // prezzo semplice
         {
-            return Code;
+            return price;
         }
 
-        public float PrezzoIva()
-        {
-            return Code * Iva;
+        public float GetPrezzoIva() //prezzo con l'iva
+        {            
+            float iva = (price * tax) / 100;
+            return price + iva;
         }
         
     }
